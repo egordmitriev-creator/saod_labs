@@ -1,0 +1,105 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+struct vertex{  // структура вершины
+    int data;
+    vertex* left;
+    vertex* right;
+
+    vertex(int value) : data(value), left(nullptr), right(nullptr){}
+};
+
+void pre_order(vertex* root){   // обход сверху вниз
+    if (root == nullptr){
+        return;
+    }
+    cout << root -> data << " ";
+    pre_order(root -> left);
+    pre_order(root -> right);
+}
+
+void in_order(vertex* root){    // обход слева направо
+    if (root == nullptr){
+        return;
+    }
+    in_order(root -> left);
+    cout << root -> data << " ";
+    in_order(root -> right);
+}
+
+void post_order(vertex* root){  // обход снизу вверх
+    if (root == nullptr){
+        return;
+    }
+    post_order(root -> left);
+    post_order(root -> right);
+    cout << root -> data << " ";
+}
+
+int treeSize(vertex* root){ // определение размера дерева
+    if (root == nullptr){
+        return 0;
+    }
+    int leftSize = treeSize(root -> left);
+    int rightSize = treeSize(root -> right);
+    return leftSize + rightSize + 1;
+}
+
+int treeHeight(vertex* root){   // определение высоты дерева
+    if (root == nullptr){
+        return 0;
+    }
+    int leftHeight = treeHeight(root -> left);
+    int rightHeight = treeHeight(root -> right);
+    return max(leftHeight, rightHeight) + 1;
+}
+
+int averageHeight(vertex* root, int l){ // определение средней высоты дерева
+    if (root == nullptr){
+        return 0;
+    }
+    int avHeight = l + averageHeight(root -> left, l + 1) + averageHeight(root -> right, l + 1);
+    return avHeight;
+}
+
+int checkSumm(vertex* root){    // определение контрольной суммы
+    if (root == nullptr){
+        return 0;
+    }
+    int summ = root -> data + checkSumm(root -> left) + checkSumm(root -> right);
+    return summ;
+} 
+
+int main(){
+    vertex* root = new vertex(17);
+    root -> left = new vertex(14);
+    root -> left -> left = new vertex(8);
+    root -> left -> right = new vertex(11);
+    root -> left -> left -> right = new vertex(9);
+    root -> left -> left -> right -> left = new vertex(4);
+
+    cout << "pre-order traversal: ";
+    pre_order(root);
+    cout << endl;
+
+    cout << "in-order traversal: ";
+    in_order(root);
+    cout << endl;
+
+    cout << "post-order traversal: ";
+    post_order(root);
+    cout << endl;
+
+    int size = treeSize(root);
+    cout << "Size: " << size << endl;
+
+    int height = treeHeight(root);
+    cout << "Height: " << height << endl;
+
+    int aH = averageHeight(root, 1) / treeSize(root);
+    cout << "Average Height: " << aH << endl;
+
+    int s = checkSumm(root);
+    cout << "Check summ: " << s << endl;
+}
